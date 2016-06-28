@@ -33,7 +33,7 @@ describe("Asch JS", function () {
 		});
 
 		it("should has properties", function () {
-			var properties = ["getBytes", "getHash", "getId", "getFee", "sign", "secondSign", "getKeys", "getAddress", "verify", "verifySecondSignature", "fixedPoint"];
+			var properties = ["getBytes", "getHash", "getId", "getTid", "getFee", "sign", "secondSign", "getKeys", "getAddress", "verify", "verifySecondSignature", "fixedPoint"];
 			properties.forEach(function (property) {
 				(crypto).should.have.property(property);
 			});
@@ -55,7 +55,7 @@ describe("Asch JS", function () {
 				var transaction = {
 					type: 0,
 					amount: 1000,
-					recipientId: "58191285901858109L",
+					recipientId: "58191285901858109",
 					timestamp: 141738,
 					asset: {},
 					senderPublicKey: "5d036a858ce89f844491762eb89e2bfbd50a4a0a0da658e4b2628b25b117ae09",
@@ -73,7 +73,7 @@ describe("Asch JS", function () {
 				var transaction = {
 					type: 0,
 					amount: 1000,
-					recipientId: "58191285901858109L",
+					recipientId: "58191285901858109",
 					timestamp: 141738,
 					asset: {},
 					senderPublicKey: "5d036a858ce89f844491762eb89e2bfbd50a4a0a0da658e4b2628b25b117ae09",
@@ -104,7 +104,7 @@ describe("Asch JS", function () {
 				var transaction = {
 					type: 0,
 					amount: 1000,
-					recipientId: "58191285901858109L",
+					recipientId: "58191285901858109",
 					timestamp: 141738,
 					asset: {},
 					senderPublicKey: "5d036a858ce89f844491762eb89e2bfbd50a4a0a0da658e4b2628b25b117ae09",
@@ -119,30 +119,30 @@ describe("Asch JS", function () {
 			});
 		});
 
-		describe("#getId", function () {
-			var getId = crypto.getId;
+		describe("#getTid", function () {
+			var getTid = crypto.getTid;
 
 			it("should be ok", function () {
-				(getId).should.be.ok;
+				(getTid).should.be.ok;
 			});
 
 			it("should be a function", function () {
-				(getId).should.be.type("function");
+				(getTid).should.be.type("function");
 			});
 
-			it("should return string id and be equal to 13987348420913138422", function () {
+			it("should return string id and be equal to 13987348420913138422T", function () {
 				var transaction = {
 					type: 0,
 					amount: 1000,
-					recipientId: "58191285901858109L",
+					recipientId: "58191285901858109A",
 					timestamp: 141738,
 					asset: {},
 					senderPublicKey: "5d036a858ce89f844491762eb89e2bfbd50a4a0a0da658e4b2628b25b117ae09",
 					signature: "618a54975212ead93df8c881655c625544bce8ed7ccdfe6f08a42eecfb1adebd051307be5014bb051617baf7815d50f62129e70918190361e5d4dd4796541b0a"
 				};
 
-				var id = getId(transaction);
-				(id).should.be.type("string").and.equal("13987348420913138422");
+				var id = getTid(transaction);
+				(id).should.be.type("string").and.equal("13987348420913138422T");
 			});
 		});
 
@@ -280,7 +280,7 @@ describe("Asch JS", function () {
 
 				(address).should.be.ok;
 				(address).should.be.type("string");
-				(address).should.be.equal("18160565574430594874L");
+				(address).should.be.equal("18160565574430594874A");
 			});
 		});
 
@@ -368,8 +368,8 @@ describe("Asch JS", function () {
 					(trs.amount).should.be.type("number").and.equal(0);
 				});
 
-				it("should have fee as number and equal 2500000000", function () {
-					(trs.fee).should.be.type("number").and.equal(2500000000);
+				it("should have fee as number and equal 50000000000", function () {
+					(trs.fee).should.be.type("number").and.equal(50000000000);
 				});
 
 				it("should have null recipientId", function () {
@@ -755,11 +755,11 @@ describe("Asch JS", function () {
 				(getTime).should.be.type("function");
 			});
 
-			it("should return epoch time as number, equal to 196144", function () {
-				var d = 1428733744000;
+			it("should return epoch time as number, equal to 172800", function () {
+				var d = 1469822400000;
 				var time = getTime(d);
 				(time).should.be.ok;
-				(time).should.be.type("number").and.equal(196144);
+				(time).should.be.type("number").and.equal(172800);
 			});
 		});
 
@@ -774,11 +774,11 @@ describe("Asch JS", function () {
 				(getRealTime).should.be.type("function");
 			});
 
-			it("should return return real time, convert 196144 to 1428733744000", function () {
+			it("should return return real time, convert 196144 to 1469845744000", function () {
 				var d = 196144;
 				var real = getRealTime(d);
 				(real).should.be.ok;
-				(real).should.be.type("number").and.equal(1428733744000);
+				(real).should.be.type("number").and.equal(1469845744000);
 			});
 		});
 
@@ -877,7 +877,7 @@ describe("Asch JS", function () {
 			});
 
 			it("should create transaction without second signature", function () {
-				trs = createTransaction("58191285901858109L", 1000, "secret");
+				trs = createTransaction("58191285901858109", 1000, "secret");
 				(trs).should.be.ok;
 			});
 
@@ -910,8 +910,8 @@ describe("Asch JS", function () {
 					})
 				});
 
-				it("should have recipientId as string and to be equal 58191285901858109L", function () {
-					(trs.recipientId).should.be.type("string").and.equal("58191285901858109L");
+				it("should have recipientId as string and to be equal 58191285901858109", function () {
+					(trs.recipientId).should.be.type("string").and.equal("58191285901858109");
 				});
 
 				it("should have amount as number and eqaul to 1000", function () {
@@ -962,7 +962,7 @@ describe("Asch JS", function () {
 			});
 
 			it("should create transaction without second signature", function () {
-				trs = createTransaction("58191285901858109L", 1000, "secret", secondSecret);
+				trs = createTransaction("58191285901858109", 1000, "secret", secondSecret);
 				(trs).should.be.ok;
 			});
 
@@ -995,8 +995,8 @@ describe("Asch JS", function () {
 					})
 				});
 
-				it("should have recipientId as string and to be equal 58191285901858109L", function () {
-					(trs.recipientId).should.be.type("string").and.equal("58191285901858109L");
+				it("should have recipientId as string and to be equal 58191285901858109", function () {
+					(trs.recipientId).should.be.type("string").and.equal("58191285901858109");
 				});
 
 				it("should have amount as number and eqaul to 1000", function () {
