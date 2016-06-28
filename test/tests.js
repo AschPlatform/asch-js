@@ -33,7 +33,7 @@ describe("Asch JS", function () {
 		});
 
 		it("should has properties", function () {
-			var properties = ["getBytes", "getHash", "getId", "getTid", "getFee", "sign", "secondSign", "getKeys", "getAddress", "verify", "verifySecondSignature", "fixedPoint"];
+			var properties = ["getBytes", "getHash", "getId", "getFee", "sign", "secondSign", "getKeys", "getAddress", "verify", "verifySecondSignature", "fixedPoint"];
 			properties.forEach(function (property) {
 				(crypto).should.have.property(property);
 			});
@@ -119,30 +119,30 @@ describe("Asch JS", function () {
 			});
 		});
 
-		describe("#getTid", function () {
-			var getTid = crypto.getTid;
+		describe("#getId", function () {
+			var getId = crypto.getId;
 
 			it("should be ok", function () {
-				(getTid).should.be.ok;
+				(getId).should.be.ok;
 			});
 
 			it("should be a function", function () {
-				(getTid).should.be.type("function");
+				(getId).should.be.type("function");
 			});
 
-			it("should return string id and be equal to 13987348420913138422T", function () {
+			it("should return string id and be equal to 17383801016740690931", function () {
 				var transaction = {
 					type: 0,
 					amount: 1000,
-					recipientId: "58191285901858109A",
+					recipientId: "58191285901858109",
 					timestamp: 141738,
 					asset: {},
 					senderPublicKey: "5d036a858ce89f844491762eb89e2bfbd50a4a0a0da658e4b2628b25b117ae09",
 					signature: "618a54975212ead93df8c881655c625544bce8ed7ccdfe6f08a42eecfb1adebd051307be5014bb051617baf7815d50f62129e70918190361e5d4dd4796541b0a"
 				};
 
-				var id = getTid(transaction);
-				(id).should.be.type("string").and.equal("13987348420913138422T");
+				var id = getId(transaction);
+				(id).should.be.type("string").and.equal("17383801016740690931");
 			});
 		});
 
@@ -280,7 +280,7 @@ describe("Asch JS", function () {
 
 				(address).should.be.ok;
 				(address).should.be.type("string");
-				(address).should.be.equal("18160565574430594874A");
+				(address).should.be.equal("18160565574430594874");
 			});
 		});
 
