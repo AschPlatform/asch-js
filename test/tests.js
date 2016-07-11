@@ -130,7 +130,7 @@ describe("Asch JS", function () {
 				(getId).should.be.type("function");
 			});
 
-			it("should return string id and be equal to 17383801016740690931", function () {
+			it("should return string id and be equal to 13987348420913138422", function () {
 				var transaction = {
 					type: 0,
 					amount: 1000,
@@ -142,7 +142,7 @@ describe("Asch JS", function () {
 				};
 
 				var id = getId(transaction);
-				(id).should.be.type("string").and.equal("17383801016740690931");
+				(id).should.be.type("string").and.equal("13987348420913138422");
 			});
 		});
 
@@ -755,11 +755,11 @@ describe("Asch JS", function () {
 				(getTime).should.be.type("function");
 			});
 
-			it("should return epoch time as number, equal to 172800", function () {
+			it("should return epoch time as number, equal to 2764800", function () {
 				var d = 1469822400000;
 				var time = getTime(d);
 				(time).should.be.ok;
-				(time).should.be.type("number").and.equal(172800);
+				(time).should.be.type("number").and.equal(2764800);
 			});
 		});
 
@@ -774,11 +774,11 @@ describe("Asch JS", function () {
 				(getRealTime).should.be.type("function");
 			});
 
-			it("should return return real time, convert 196144 to 1469845744000", function () {
+			it("should return return real time, convert 196144 to 1467253744000", function () {
 				var d = 196144;
 				var real = getRealTime(d);
 				(real).should.be.ok;
-				(real).should.be.type("number").and.equal(1469845744000);
+				(real).should.be.type("number").and.equal(1467253744000);
 			});
 		});
 
