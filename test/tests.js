@@ -368,8 +368,8 @@ describe("Asch JS", function () {
 					(trs.amount).should.be.type("number").and.equal(0);
 				});
 
-				it("should have fee as number and equal 50000000000", function () {
-					(trs.fee).should.be.type("number").and.equal(50000000000);
+				it("should have fee as number and equal 10000000000", function () {
+					(trs.fee).should.be.type("number").and.equal(10000000000);
 				});
 
 				it("should have null recipientId", function () {
@@ -1106,7 +1106,7 @@ describe("Asch JS", function () {
 				});
 
 				it("should have recipientId string equal to sender", function () {
-					(vt).should.have.property("recipientId").and.be.type("string").and.equal(asch.crypto.getAddress(publicKey))
+					(vt).should.have.property("recipientId").equal(null);;
 				});
 
 				it("should have amount number eaul to 0", function () {
@@ -1185,23 +1185,23 @@ describe("Asch JS", function () {
 
 				describe("vote asset", function () {
 					it("should be ok", function () {
-						(vt.asset).should.have.property("votes").and.be.ok;
+						(vt.asset.vote).should.have.property("votes").and.be.ok;
 					});
 
 					it("should be object", function () {
-						(vt.asset.votes).should.be.type("object");
+						(vt.asset.vote.votes).should.be.type("object");
 					});
 
 					it("should be not empty", function () {
-						(vt.asset.votes).should.be.not.empty;
+						(vt.asset.vote.votes).should.be.not.empty;
 					});
 
 					it("should contains one element", function () {
-						(vt.asset.votes.length).should.be.equal(1);
+						(vt.asset.vote.votes.length).should.be.equal(1);
 					});
 
 					it("should have public keys in hex", function () {
-						vt.asset.votes.forEach(function (v) {
+						vt.asset.vote.votes.forEach(function (v) {
 							(v).should.be.type("string").startWith("+").and.match(function () {
 								try {
 									new Buffer(v.substring(1, v.length), "hex");
@@ -1215,7 +1215,7 @@ describe("Asch JS", function () {
 					});
 
 					it("should be equal to sender public key", function () {
-						var v = vt.asset.votes[0];
+						var v = vt.asset.vote.votes[0];
 						(v.substring(1, v.length)).should.be.equal(publicKey);
 					});
 				})
