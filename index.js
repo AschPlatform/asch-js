@@ -1,4 +1,4 @@
-asch = {
+module.exports = {
 	crypto : require("./lib/transactions/crypto.js"),
 	dapp: require("./lib/transactions/dapp.js"),
 	delegate : require("./lib/transactions/delegate.js"),
@@ -11,5 +11,3 @@ asch = {
 		format: require("./lib/time/format.js")
 	}
 }
-
-module.exports = asch;

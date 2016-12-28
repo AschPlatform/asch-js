@@ -1,7 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 window.AschJS = AschJS = require('./index.js');
 },{"./index.js":2}],2:[function(require,module,exports){
-asch = {
+module.exports = {
 	crypto : require("./lib/transactions/crypto.js"),
 	dapp: require("./lib/transactions/dapp.js"),
 	delegate : require("./lib/transactions/delegate.js"),
@@ -14,9 +14,6 @@ asch = {
 		format: require("./lib/time/format.js")
 	}
 }
-
-module.exports = asch;
-
 },{"./lib/time/format.js":4,"./lib/time/slots.js":5,"./lib/transactions/crypto.js":6,"./lib/transactions/dapp.js":7,"./lib/transactions/delegate.js":8,"./lib/transactions/signature.js":9,"./lib/transactions/transaction.js":10,"./lib/transactions/uia.js":11,"./lib/transactions/vote.js":12}],3:[function(require,module,exports){
 module.exports = {
   fees:{
