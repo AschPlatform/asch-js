@@ -305,6 +305,10 @@ function getBytes(transaction) {
 			assetSize = assetBytes.length;
 			break;
 	}
+	if (transaction.__assetBytes__) {
+		assetBytes = transaction.__assetBytes__;
+		assetSize = assetBytes.length;
+	}
 
 	if (transaction.requesterPublicKey) {
 		assetSize += 32;
@@ -683,17 +687,19 @@ function createTransaction(asset, bytes, fee, type, recipientId, secret, secondS
     recipientId: recipientId,
     senderPublicKey: keys.publicKey,
     timestamp: getClientFixedTime(),
-    asset: asset
+    asset: asset,
+    __assetBytes__: bytes
   }
 
-  crypto.sign(transaction, keys, bytes)
+  crypto.sign(transaction, keys)
 
   if (secondSecret) {
     var secondKeys = crypto.getKeys(secondSecret)
-    crypto.secondSign(transaction, secondKeys, bytes)
+    crypto.secondSign(transaction, secondKeys)
   }
 
   transaction.id = crypto.getId(transaction)
+  delete transaction.__assetBytes__
 
   return transaction
 }
