@@ -314,7 +314,7 @@ function getBytes(transaction) {
 		assetSize += 32;
 	}
 
-	var bb = new ByteBuffer(1 + 4 + 32 + 8 + 8 + 64 + 64 + assetSize, true);
+	var bb = new ByteBuffer();
 	bb.writeByte(transaction.type);
 	bb.writeInt(transaction.timestamp);
 
