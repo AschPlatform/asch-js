@@ -1,6 +1,6 @@
 {
   "name": "asch-js",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "asch javascript library",
   "main": "index.js",
   "directories": {
