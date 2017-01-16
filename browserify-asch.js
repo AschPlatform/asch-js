@@ -680,6 +680,14 @@ function getClientFixedTime() {
   return slots.getTime() - constants.clientDriftSeconds
 }
 
+function toLocalBuffer(buf) {
+  if (typeof window !== 'undefined') {
+    return new Uint8Array(buf.toArrayBuffer())
+  } else {
+    return buf.toBuffer()
+  }
+}
+
 function createTransaction(asset, bytes, fee, type, recipientId, secret, secondSecret) {
   var keys = crypto.getKeys(secret)
 
@@ -719,7 +727,7 @@ module.exports = {
     bb.writeString(name)
     bb.writeString(desc)
     bb.flip()
-    var bytes = bb.toBuffer()
+    var bytes = toLocalBuffer(bb)
     var fee = (Math.floor(bytes.length / 200) + 1) * 0.1 * constants.coin
     return createTransaction(asset, bytes, fee, 9, null, secret, secondSecret)
   },
@@ -743,7 +751,7 @@ module.exports = {
       bb.writeString(strategy)
     }
     bb.flip()
-    var bytes = bb.toBuffer()
+    var bytes = toLocalBuffer(bb)
     var fee = (Math.floor(bytes.length / 200) + 1) * 0.1 * constants.coin
     return createTransaction(asset, bytes, fee, 10, null, secret, secondSecret)
   },
@@ -761,7 +769,7 @@ module.exports = {
     bb.writeByte(flagType)
     bb.writeByte(flag)
     bb.flip()
-    var bytes = bb.toBuffer()
+    var bytes = toLocalBuffer(bb)
     var fee = 0.1 * constants.coin
     return createTransaction(asset, bytes, fee, 11, null, secret, secondSecret)
   },
@@ -783,7 +791,7 @@ module.exports = {
       bb.writeString(list[i])
     }
     bb.flip()
-    var bytes = bb.toBuffer()
+    var bytes = toLocalBuffer(bb)
     var fee = 0.2 * constants.coin
     return createTransaction(asset, bytes, fee, 12, null, secret, secondSecret)
   },
@@ -799,7 +807,7 @@ module.exports = {
     bb.writeString(currency)
     bb.writeString(amount)
     bb.flip()
-    var bytes = bb.toBuffer()
+    var bytes = toLocalBuffer(bb)
     var fee = 0.1 * constants.coin
     return createTransaction(asset, bytes, fee, 13, null, secret, secondSecret)
   },
@@ -815,7 +823,7 @@ module.exports = {
     bb.writeString(currency)
     bb.writeString(amount)
     bb.flip()
-    var bytes = bb.toBuffer()
+    var bytes = toLocalBuffer(bb)
     var fee = 0.1 * constants.coin
     return createTransaction(asset, bytes, fee, 14, recipientId, secret, secondSecret)
   },
