@@ -314,7 +314,7 @@ function getBytes(transaction) {
 		assetSize += 32;
 	}
 
-	var bb = new ByteBuffer();
+	var bb = new ByteBuffer(1, true);
 	bb.writeByte(transaction.type);
 	bb.writeInt(transaction.timestamp);
 
@@ -723,7 +723,7 @@ module.exports = {
         desc: desc
       }
     }
-    var bb = new ByteBuffer()
+    var bb = new ByteBuffer(1, true)
     bb.writeString(name)
     bb.writeString(desc)
     bb.flip()
@@ -742,7 +742,7 @@ module.exports = {
         strategy: strategy
       }
     }
-    var bb = new ByteBuffer()
+    var bb = new ByteBuffer(1, true)
     bb.writeString(name)
     bb.writeString(desc)
     bb.writeString(maximum)
@@ -764,7 +764,7 @@ module.exports = {
         flag: flag
       }
     }
-    var bb = new ByteBuffer()
+    var bb = new ByteBuffer(1, true)
     bb.writeString(currency)
     bb.writeByte(flagType)
     bb.writeByte(flag)
@@ -783,7 +783,7 @@ module.exports = {
         list: list
       }
     }
-    var bb = new ByteBuffer()
+    var bb = new ByteBuffer(1, true)
     bb.writeString(currency)
     bb.writeString(operator)
     bb.writeByte(flag)
@@ -803,7 +803,7 @@ module.exports = {
         amount: amount
       }
     }
-    var bb = new ByteBuffer()
+    var bb = new ByteBuffer(1, true)
     bb.writeString(currency)
     bb.writeString(amount)
     bb.flip()
@@ -819,7 +819,7 @@ module.exports = {
         amount: amount
       }
     }
-    var bb = new ByteBuffer()
+    var bb = new ByteBuffer(1, true)
     bb.writeString(currency)
     bb.writeString(amount)
     bb.flip()
