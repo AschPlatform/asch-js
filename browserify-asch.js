@@ -647,11 +647,14 @@ function toLocalBuffer(buf) {
 
 function createStorage(content, secret, secondSecret) {
 	var keys = crypto.getKeys(secret)
-  var bytes
+  var bytes =  null
   try {
     bytes = toLocalBuffer(ByteBuffer.fromHex(content))
   } catch (e) {
     throw new Error('Content must be hex format')
+  }
+  if (!bytes || bytes.length == 0) {
+    throw new Error('Invalid content format')
   }
   var fee = (Math.floor(bytes.length / 200) + 1) * 0.1 * constants.coin
   
@@ -676,7 +679,7 @@ function createStorage(content, secret, secondSecret) {
 		var secondKeys = crypto.getKeys(secondSecret)
 		crypto.secondSign(transaction, secondKeys)
 	}
-
+  delete transaction.__assetBytes__
 	transaction.id = crypto.getId(transaction)
 	return transaction
 }
