@@ -399,6 +399,14 @@ function getSignatureBytes(signature) {
 	return new Uint8Array(bb.toArrayBuffer());
 }
 
+function toLocalBuffer(buf) {
+  if (typeof window !== 'undefined') {
+    return new Uint8Array(buf.toArrayBuffer())
+  } else {
+    return buf.toBuffer()
+  }
+}
+
 function getDAppBytes(dapp) {
 	try {
 		var buf = new Buffer([]);
@@ -476,20 +484,15 @@ function getBytes(transaction, skipSignature, skipSecondSignature) {
 
 	switch (transaction.type) {
 		case 1: // Signature
-			assetSize = 32;
 			assetBytes = getSignatureBytes(transaction.asset.signature);
 			break;
 
 		case 2: // Delegate
 			assetBytes = new Buffer(transaction.asset.delegate.username, "utf8");
-			assetSize = assetBytes.length;
 			break;
 
 		case 3: // Vote
-			if (transaction.asset.vote.votes !== null) {
-				assetBytes = new Buffer(transaction.asset.vote.votes.join(""), "utf8");
-				assetSize = assetBytes.length;
-			}
+			assetBytes = new Buffer(transaction.asset.vote.votes.join(""), "utf8");
 			break;
 
 		case 4: // Multi-Signature
@@ -506,27 +509,87 @@ function getBytes(transaction, skipSignature, skipSecondSignature) {
 			bb.flip();
 
 			assetBytes = bb.toBuffer();
-			assetSize = assetBytes.length;
 			break;
 
 		case 5: // Dapp
 			assetBytes = getDAppBytes(transaction.asset.dapp);
-			assetSize = assetBytes.length;
 			break;
 
 		case 6: // In Transfer (Dapp Deposit)
 			assetBytes = getInTransferBytes(transaction.asset.inTransfer);
-			assetSize = assetBytes.length;
 			break;
 		case 7:
 			assetBytes = getOutTransferBytes(transaction.asset.outTransfer)
-			assetSize = assetBytes.length;
+			break;
+		case 8:
+			assetBytes = toLocalBuffer(ByteBuffer.fromHex(content))
+			break;
+		case 9:
+			var bb = new ByteBuffer(1, true)
+			var asset = transaction.asset.uiaIssuer
+			bb.writeString(asset.name)
+			bb.writeString(asset.desc)
+			bb.flip()
+			assetBytes = toLocalBuffer(bb)
+			break;
+		case 10:
+			var bb = new ByteBuffer(1, true)
+			var asset = transaction.asset.uiaAsset
+			bb.writeString(asset.name)
+			bb.writeString(asset.desc)
+			bb.writeString(asset.maximum)
+			bb.writeByte(asset.precision)
+			if (typeof asset.strategy === 'string' && asset.strategy.length > 0) {
+				bb.writeString(asset.strategy)
+			}
+			bb.writeByte(asset.allowWriteoff)
+			bb.writeByte(asset.allowWhitelist)
+			bb.writeByte(asset.allowBlacklist)
+			bb.flip()
+			assetBytes = toLocalBuffer(bb)
+			break;
+		case 11:
+			var bb = new ByteBuffer(1, true)
+			var asset = transaction.asset.uiaFlags
+			bb.writeString(asset.currency)
+			bb.writeByte(asset.flagType)
+			bb.writeByte(asset.flag)
+			bb.flip()
+			assetBytes = toLocalBuffer(bb)
+			break;
+		case 12:
+			var bb = new ByteBuffer(1, true)
+			var asset = transaction.asset.uiaAcl
+			bb.writeString(asset.currency)
+			bb.writeString(asset.operator)
+			bb.writeByte(asset.flag)
+			for (var i = 0; i < asset.list.length; ++i) {
+				bb.writeString(asset.list[i])
+			}
+			bb.flip()
+			assetBytes = toLocalBuffer(bb)
+			break;
+		case 13:
+			var bb = new ByteBuffer(1, true)
+			var asset = transaction.asset.uiaIssue
+			bb.writeString(asset.currency)
+			bb.writeString(asset.amount)
+			bb.flip()
+			assetBytes = toLocalBuffer(bb)
+			break;
+		case 14:
+			var bb = new ByteBuffer(1, true)
+			var asset = transaction.asset.uiaTransfer
+			bb.writeString(asset.currency)
+			bb.writeString(asset.amount)
+			bb.flip()
+			assetBytes = toLocalBuffer(bb)
 			break;
 	}
 	if (transaction.__assetBytes__) {
 		assetBytes = transaction.__assetBytes__;
-		assetSize = assetBytes.length;
 	}
+	if (assetBytes) assetSize = assetBytes.length
 
 	if (transaction.requesterPublicKey) {
 		assetSize += 32;
@@ -695,6 +758,14 @@ function verifySecondSignature(transaction, publicKey) {
 	return res;
 }
 
+function verifyBytes(bytes, signature, publicKey) {
+	var hash = crypto.createHash("sha256").update(bytes, "hex").digest();
+	var signatureBuffer = new Buffer(signature, "hex");
+	var publicKeyBuffer = new Buffer(publicKey, "hex");
+	var res = nacl.crypto_sign_verify_detached(signatureBuffer, hash, publicKeyBuffer);
+	return res
+}
+
 function getKeys(secret) {
 	var hash = crypto.createHash("sha256").update(secret, "utf8").digest();
 	var keypair = nacl.crypto_sign_keypair_from_seed(hash);
@@ -721,7 +792,9 @@ module.exports = {
 	verify: verify,
 	verifySecondSignature: verifySecondSignature,
 	fixedPoint: fixedPoint,
-	signBytes: signBytes
+	signBytes: signBytes,
+	toLocalBuffer: toLocalBuffer,
+	verifyBytes: verifyBytes
 }
 
 }).call(this,require("buffer").Buffer)
@@ -898,19 +971,11 @@ var crypto = require("./crypto.js")
 var constants = require("../constants.js")
 var slots = require("../time/slots.js")
 
-function toLocalBuffer(buf) {
-  if (typeof window !== 'undefined') {
-    return new Uint8Array(buf.toArrayBuffer())
-  } else {
-    return buf.toBuffer()
-  }
-}
-
 function createStorage(content, secret, secondSecret) {
 	var keys = crypto.getKeys(secret)
   var bytes =  null
   try {
-    bytes = toLocalBuffer(ByteBuffer.fromHex(content))
+    bytes = crypto.toLocalBuffer(ByteBuffer.fromHex(content))
   } catch (e) {
     throw new Error('Content must be hex format')
   }
@@ -1108,15 +1173,7 @@ function getClientFixedTime() {
   return slots.getTime() - constants.clientDriftSeconds
 }
 
-function toLocalBuffer(buf) {
-  if (typeof window !== 'undefined') {
-    return new Uint8Array(buf.toArrayBuffer())
-  } else {
-    return buf.toBuffer()
-  }
-}
-
-function createTransaction(asset, bytes, fee, type, recipientId, message, secret, secondSecret) {
+function createTransaction(asset, fee, type, recipientId, message, secret, secondSecret) {
   var keys = crypto.getKeys(secret)
 
   var transaction = {
@@ -1127,8 +1184,7 @@ function createTransaction(asset, bytes, fee, type, recipientId, message, secret
     senderPublicKey: keys.publicKey,
     timestamp: getClientFixedTime(),
     message: message,
-    asset: asset,
-    __assetBytes__: bytes
+    asset: asset
   }
 
   crypto.sign(transaction, keys)
@@ -1139,7 +1195,6 @@ function createTransaction(asset, bytes, fee, type, recipientId, message, secret
   }
 
   transaction.id = crypto.getId(transaction)
-  delete transaction.__assetBytes__
 
   return transaction
 }
@@ -1152,14 +1207,9 @@ module.exports = {
         desc: desc
       }
     }
-    var bb = new ByteBuffer(1, true)
-    bb.writeString(name)
-    bb.writeString(desc)
-    bb.flip()
-    var bytes = toLocalBuffer(bb)
     //var fee = (100 + (Math.floor(bytes.length / 200) + 1) * 0.1) * constants.coin
     var fee = 100 * constants.coin
-    return createTransaction(asset, bytes, fee, 9, null, null, secret, secondSecret)
+    return createTransaction(asset, fee, 9, null, null, secret, secondSecret)
   },
 
   createAsset: function (name, desc, maximum, precision, strategy, allowWriteoff, allowWhitelist, allowBlacklist, secret, secondSecret) {
@@ -1175,22 +1225,9 @@ module.exports = {
         allowWriteoff: allowWriteoff
       }
     }
-    var bb = new ByteBuffer(1, true)
-    bb.writeString(name)
-    bb.writeString(desc)
-    bb.writeString(maximum)
-    bb.writeByte(precision)
-    if (typeof strategy === 'string' && strategy.length > 0) {
-      bb.writeString(strategy)
-    }
-    bb.writeByte(allowWriteoff)
-    bb.writeByte(allowWhitelist)
-    bb.writeByte(allowBlacklist)
-    bb.flip()
-    var bytes = toLocalBuffer(bb)
     // var fee = (500 + (Math.floor(bytes.length / 200) + 1) * 0.1) * constants.coin
     var fee = 500 * constants.coin
-    return createTransaction(asset, bytes, fee, 10, null, null, secret, secondSecret)
+    return createTransaction(asset, fee, 10, null, null, secret, secondSecret)
   },
 
   createFlags: function (currency, flagType, flag, secret, secondSecret) {
@@ -1201,14 +1238,8 @@ module.exports = {
         flag: flag
       }
     }
-    var bb = new ByteBuffer(1, true)
-    bb.writeString(currency)
-    bb.writeByte(flagType)
-    bb.writeByte(flag)
-    bb.flip()
-    var bytes = toLocalBuffer(bb)
     var fee = 0.1 * constants.coin
-    return createTransaction(asset, bytes, fee, 11, null, null, secret, secondSecret)
+    return createTransaction(asset, fee, 11, null, null, secret, secondSecret)
   },
 
   createAcl: function (currency, operator, flag, list, secret, secondSecret) {
@@ -1220,17 +1251,8 @@ module.exports = {
         list: list
       }
     }
-    var bb = new ByteBuffer(1, true)
-    bb.writeString(currency)
-    bb.writeString(operator)
-    bb.writeByte(flag)
-    for (var i = 0; i < list.length; ++i) {
-      bb.writeString(list[i])
-    }
-    bb.flip()
-    var bytes = toLocalBuffer(bb)
     var fee = 0.2 * constants.coin
-    return createTransaction(asset, bytes, fee, 12, null, null, secret, secondSecret)
+    return createTransaction(asset, fee, 12, null, null, secret, secondSecret)
   },
 
   createIssue: function (currency, amount, secret, secondSecret) {
@@ -1240,13 +1262,8 @@ module.exports = {
         amount: amount
       }
     }
-    var bb = new ByteBuffer(1, true)
-    bb.writeString(currency)
-    bb.writeString(amount)
-    bb.flip()
-    var bytes = toLocalBuffer(bb)
     var fee = 0.1 * constants.coin
-    return createTransaction(asset, bytes, fee, 13, null, null, secret, secondSecret)
+    return createTransaction(asset, fee, 13, null, null, secret, secondSecret)
   },
 
   createTransfer: function (currency, amount, recipientId, message, secret, secondSecret) {
@@ -1256,13 +1273,8 @@ module.exports = {
         amount: amount
       }
     }
-    var bb = new ByteBuffer(1, true)
-    bb.writeString(currency)
-    bb.writeString(amount)
-    bb.flip()
-    var bytes = toLocalBuffer(bb)
     var fee = 0.1 * constants.coin
-    return createTransaction(asset, bytes, fee, 14, recipientId, message, secret, secondSecret)
+    return createTransaction(asset, fee, 14, recipientId, message, secret, secondSecret)
   },
 }
 
