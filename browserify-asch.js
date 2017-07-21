@@ -853,9 +853,7 @@ function getDAppTransactionBytes(trs, skipSignature) {
 
 	bb.writeInt(trs.type)
 
-	for (var i = 0; i < trs.args.length; ++i) {
-		bb.writeString(trs.args[i])
-	}
+	if (trs.args) bb.writeString(trs.args)
 
 	if (!skipSignature && trs.signature) {
 		var signatureBuffer = new Buffer(trs.signature, 'hex');
