@@ -1,4 +1,11 @@
-# Asch javascript library
+[![Build Status](https://travis-ci.org/AschPlatform/asch-js.png?branch=master)](https://travis-ci.org/AschPlatform/asch-js)
+[![Author](https://img.shields.io/badge/author-@AschPlatform-blue.svg?style=flat)](http://github.com/AschPlatform) 
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg?style=flat)](http://AschPlatform.mit-license.org)
+[![NpmDownload Status](http://img.shields.io/npm/dm/asch-js.svg)](https://www.npmjs.org/package/asch-js)
+[![NPM Version](https://img.shields.io/npm/v/asch-js.svg?style=flat)](https://www.npmjs.org/package/asch-js)
+- - -
+
+# Asch Javascript Library
 
 ## Install
 
@@ -18,11 +25,9 @@ Front end
 
 ```
 <script type="text/javascript" src="/browserify-asch.js"></script>
-
-# 或者
+# or
 <script type="text/javascript" src="/browserify-asch-min.js"></script>
 
-# 访问
 console.log(window.AschJS)
 ```
 
