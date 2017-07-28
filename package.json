@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "mocha test",
     "build": "browserify build.js -o browserify-asch.js && uglifyjs browserify-asch.js > browserify-asch-min.js"
   },
   "keywords": [
@@ -22,10 +22,11 @@
     "buffer": "^4.7.0",
     "bytebuffer": "^5.0.1",
     "crypto-browserify": "^3.11.0",
-    "js-nacl": "^0.6.0"
+    "tweetnacl": "^1.0.0"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
+    "mocha": "^3.4.2",
     "should": "^9.0.2",
     "uglify-js": "^2.7.3"
   }
