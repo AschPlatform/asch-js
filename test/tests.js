@@ -142,7 +142,7 @@ describe("Asch JS", function () {
 				};
 
 				var id = getId(transaction);
-				(id).should.be.type("string").and.equal("13987348420913138422");
+				(id).should.be.type("string").and.equal("f60a26da470b1dc233fd526ed7306c1d84836f9e2ecee82c9ec47319e0910474");
 			});
 		});
 
@@ -158,28 +158,28 @@ describe("Asch JS", function () {
 			});
 
 			it("should return number", function () {
-				var fee = getFee({amount: 100000, type: 0});
+				var fee = getFee({ amount: 100000, type: 0 });
 				(fee).should.be.type("number");
 				(fee).should.be.not.NaN;
 			});
 
 			it("should return 10000000", function () {
-				var fee = getFee({amount: 100000, type: 0});
+				var fee = getFee({ amount: 100000, type: 0 });
 				(fee).should.be.type("number").and.equal(10000000);
 			});
 
 			it("should return 10000000000", function () {
-				var fee = getFee({type: 1});
+				var fee = getFee({ type: 1 });
 				(fee).should.be.type("number").and.equal(10000000000);
 			});
 
 			it("should be equal 1000000000000", function () {
-				var fee = getFee({type: 2});
+				var fee = getFee({ type: 2 });
 				(fee).should.be.type("number").and.equal(1000000000000);
 			});
 
 			it("should be equal 100000000", function () {
-				var fee = getFee({type: 3});
+				var fee = getFee({ type: 3 });
 				(fee).should.be.type("number").and.equal(100000000);
 			});
 		});
@@ -280,7 +280,7 @@ describe("Asch JS", function () {
 
 				(address).should.be.ok;
 				(address).should.be.type("string");
-				(address).should.be.equal("18160565574430594874");
+				(address).should.be.equal("AFkctfgZFkaATGRhGbj72wzJqACvMyzQ1U");
 			});
 		});
 
@@ -317,34 +317,42 @@ describe("Asch JS", function () {
 		});
 
 		it("should have properties", function () {
-			(dapp).should.have.property("createDapp");
+			(dapp).should.have.property("createDApp");
 		})
 
-		describe("#createDapp", function () {
-			var createDapp = dapp.createDapp;
+		describe("#createDApp", function () {
+			var createDApp = dapp.createDApp;
 			var trs = null;
 
 			var options = {
-				category: 0,
-				name: "Asch Guestbook",
-				description: "The official Asch guestbook",
-				tags: "guestbook message sidechain",
-				type: 0,
-				link: "https://github.com/MaxKK/guestbookDapp/archive/master.zip",
-				icon: "https://raw.githubusercontent.com/MaxKK/guestbookDapp/master/icon.png"
-			};
+				"name": "asch-dapp-cctime",
+				"link": "https://github.com/AschPlatform/asch-dapp-cctime/archive/master.zip",
+				"category": 1,
+				"description": "Decentralized news channel",
+				"tags": "asch,dapp,demo,cctime",
+				"icon": "http://o7dyh3w0x.bkt.clouddn.com/hello.png",
+				"type": 0,
+				"delegates": [
+					"8b1c24a0b9ba9b9ccf5e35d0c848d582a2a22cca54d42de8ac7b2412e7dc63d4",
+					"aa7dcc3afd151a549e826753b0547c90e61b022adb26938177904a73fc4fee36",
+					"e29c75979ac834b871ce58dc52a6f604f8f565dea2b8925705883b8c001fe8ce",
+					"55ad778a8ff0ce4c25cb7a45735c9e55cf1daca110cfddee30e789cb07c8c9f3",
+					"982076258caab20f06feddc94b95ace89a2862f36fea73fa007916ab97e5946a"
+				],
+				"unlockDelegates": 3
+			}
 
 			it("should be a function", function () {
-				(createDapp).should.be.type("function");
+				(createDApp).should.be.type("function");
 			});
 
 			it("should create dapp without second signature", function () {
-				trs = createDapp("secret", null, options);
+				trs = createDApp(options, "secret", null);
 				(trs).should.be.ok;
 			});
 
 			it("should create delegate with second signature", function () {
-				trs = createDapp("secret", "secret 2", options);
+				trs = createDApp(options, "secret", "secret 2");
 				(trs).should.be.ok;
 			});
 
@@ -508,7 +516,7 @@ describe("Asch JS", function () {
 			});
 
 			it("should create delegate", function () {
-				trs = createDelegate("secret", "delegate", "secret 2");
+				trs = createDelegate("delegate", "secret", "secret 2");
 			});
 
 			describe("returned delegate", function () {
@@ -877,7 +885,7 @@ describe("Asch JS", function () {
 			});
 
 			it("should create transaction without second signature", function () {
-				trs = createTransaction("58191285901858109", 1000, "secret");
+				trs = createTransaction("58191285901858109", 1000, "", "secret");
 				(trs).should.be.ok;
 			});
 
@@ -962,7 +970,7 @@ describe("Asch JS", function () {
 			});
 
 			it("should create transaction without second signature", function () {
-				trs = createTransaction("58191285901858109", 1000, "secret", secondSecret);
+				trs = createTransaction("58191285901858109", 1000, "", "secret", secondSecret);
 				(trs).should.be.ok;
 			});
 
@@ -1093,7 +1101,7 @@ describe("Asch JS", function () {
 			});
 
 			it("should create vote", function () {
-				vt = createVote("secret", publicKeys, "second secret");
+				vt = createVote(publicKeys, "secret", "second secret");
 			});
 
 			describe("returned vote", function () {
