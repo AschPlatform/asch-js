@@ -484,6 +484,20 @@ describe("Asch JS", function () {
 					var result = asch.crypto.verifySecondSignature(trs, secondKeys.publicKey);
 					(result).should.be.not.ok;
 				});
+
+				it("should be ok to verify bytes", function () {
+					var data1 = 'data1'
+					var secret = 'secret1'
+					var keys = asch.crypto.getKeys(secret)
+					var signature = asch.crypto.signBytes(data1, keys)
+					var result = asch.crypto.verifyBytes(data1, signature, keys.publicKey)
+					result.should.be.ok
+
+					var data2 = new Buffer('a1b2c3d4', 'hex')
+					signature = asch.crypto.signBytes(data2, keys)
+					result = asch.crypto.verifyBytes(data2, signature, keys.publicKey)
+					result.should.be.ok
+				})
 			});
 		});
 	});
@@ -1230,5 +1244,13 @@ describe("Asch JS", function () {
 			});
 		});
 	});
+
+	describe('crypto sha256 and address', function () {
+		it('should be equal to the expected address', function () {
+			asch.crypto.getAddress('7a91b9bfc0ea185bf3ade9d264da273f7fe19bf71008210b1d7239c82dd3ad20').should.be.equal('AFbYJhiJb3DXzHy5ZP24mKw21M2dCBJCXP')
+			var publicKeyBuffer = new Buffer('7a91b9bfc0ea185bf3ade9d264da273f7fe19bf71008210b1d7239c82dd3ad20', 'hex')
+			asch.crypto.getAddress(publicKeyBuffer).should.be.equal('AFbYJhiJb3DXzHy5ZP24mKw21M2dCBJCXP')
+		})
+	})
 
 });
