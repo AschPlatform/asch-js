@@ -486,7 +486,7 @@ describe("Asch JS", function () {
 				});
 
 				it("should be ok to verify bytes", function () {
-					var data1 = 'data1'
+					var data1 = 'a1b2c3d4'
 					var secret = 'secret1'
 					var keys = asch.crypto.getKeys(secret)
 					var signature = asch.crypto.signBytes(data1, keys)
