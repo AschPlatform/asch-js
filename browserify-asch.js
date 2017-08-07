@@ -157,7 +157,7 @@ var base58 = require('./bs58.js')
 
 // SHA256(SHA256(buffer))
 function sha256x2(buffer) {
-  return sha256.hash(sha256.hash(buffer))
+  return Buffer.from(sha256.hash(sha256.hash(buffer)))
 }
 
 // Encode a buffer as a base58-check encoded string
@@ -528,7 +528,7 @@ function getBytes(transaction, skipSignature, skipSecondSignature) {
 			assetBytes = getOutTransferBytes(transaction.asset.outTransfer)
 			break;
 		case 8:
-			assetBytes = toLocalBuffer(ByteBuffer.fromHex(content))
+			assetBytes = toLocalBuffer(ByteBuffer.fromHex(transaction.asset.storage.content))
 			break;
 		case 9:
 			var bb = new ByteBuffer(1, true)
