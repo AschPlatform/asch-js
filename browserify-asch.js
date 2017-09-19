@@ -11,12 +11,13 @@ module.exports = {
 	vote : require("./lib/transactions/vote.js"),
 	uia: require("./lib/transactions/uia.js"),
 	storage: require("./lib/transactions/storage.js"),
+	options: require("./lib/options.js"),
 	utils: {
 		slots: require("./lib/time/slots.js"),
 		format: require("./lib/time/format.js")
 	}
 }
-},{"./lib/time/format.js":8,"./lib/time/slots.js":9,"./lib/transactions/crypto.js":10,"./lib/transactions/dapp.js":11,"./lib/transactions/delegate.js":12,"./lib/transactions/signature.js":13,"./lib/transactions/storage.js":14,"./lib/transactions/transaction.js":15,"./lib/transactions/transfer.js":16,"./lib/transactions/uia.js":17,"./lib/transactions/vote.js":18}],3:[function(require,module,exports){
+},{"./lib/options.js":8,"./lib/time/format.js":9,"./lib/time/slots.js":10,"./lib/transactions/crypto.js":11,"./lib/transactions/dapp.js":12,"./lib/transactions/delegate.js":13,"./lib/transactions/signature.js":14,"./lib/transactions/storage.js":15,"./lib/transactions/transaction.js":16,"./lib/transactions/transfer.js":17,"./lib/transactions/uia.js":18,"./lib/transactions/vote.js":19}],3:[function(require,module,exports){
 (function (Buffer){
 var sha256 = require('fast-sha256')
 var RIPEMD160 = require('ripemd160')
@@ -50,7 +51,7 @@ module.exports = {
   },
 }
 }).call(this,require("buffer").Buffer)
-},{"./base58check":6,"buffer":22,"fast-sha256":26,"ripemd160":48}],4:[function(require,module,exports){
+},{"./base58check":6,"buffer":23,"fast-sha256":27,"ripemd160":49}],4:[function(require,module,exports){
 (function (Buffer){
 // base-x encoding
 // Forked from https://github.com/cryptocoinjs/bs58
@@ -143,7 +144,7 @@ module.exports = function base (ALPHABET) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":22}],5:[function(require,module,exports){
+},{"buffer":23}],5:[function(require,module,exports){
 var basex = require('./base-x.js')
 var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 
@@ -204,7 +205,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./bs58.js":5,"buffer":22,"fast-sha256":26}],7:[function(require,module,exports){
+},{"./bs58.js":5,"buffer":23,"fast-sha256":27}],7:[function(require,module,exports){
 module.exports = {
   fees:{
     send: 10000000,
@@ -214,11 +215,26 @@ module.exports = {
     multisignature: 500000000,
     dapp: 10000000000
   },
-  coin: 100000000,
-  clientDriftSeconds: 5
+  coin: 100000000
 }
 
 },{}],8:[function(require,module,exports){
+var optionMap = {
+  clientDriftSeconds: 5
+}
+
+module.exports = {
+  set: function (key, val) {
+    optionMap[key] = val
+  },
+  get: function (key) {
+    return optionMap[key]
+  },
+  getAll: function () {
+    return optionMap
+  }
+}
+},{}],9:[function(require,module,exports){
 var slots = require('./slots.js');
 
 function timeAgo(time) {
@@ -304,7 +320,7 @@ module.exports = {
   timeAgo: timeAgo,
   fullTimestamp: fullTimestamp
 }
-},{"./slots.js":9}],9:[function(require,module,exports){
+},{"./slots.js":10}],10:[function(require,module,exports){
 function getEpochTime(time) {
 	if (time === undefined) {
 		time = (new Date()).getTime();
@@ -370,7 +386,7 @@ module.exports = {
 	beginEpochTime: beginEpochTime
 }
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function (Buffer){
 var sha256 = require("fast-sha256");
 var addressHelper = require('../address.js')
@@ -804,12 +820,13 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../address.js":3,"browserify-bignum":21,"buffer":22,"buffer/":22,"bytebuffer":23,"fast-sha256":26,"tweetnacl":52}],11:[function(require,module,exports){
+},{"../address.js":3,"browserify-bignum":22,"buffer":23,"buffer/":23,"bytebuffer":24,"fast-sha256":27,"tweetnacl":53}],12:[function(require,module,exports){
 (function (Buffer){
 var ByteBuffer = require('bytebuffer')
 var crypto = require("./crypto.js")
 var constants = require("../constants.js")
 var slots = require("../time/slots.js")
+var globalOptions = require('../options.js')
 
 function createDApp(options, secret, secondSecret) {
 	var keys = crypto.getKeys(secret);
@@ -820,7 +837,7 @@ function createDApp(options, secret, secondSecret) {
 		fee: constants.fees.dapp,
 		recipientId: null,
 		senderPublicKey: keys.publicKey,
-		timestamp: slots.getTime() - constants.clientDriftSeconds,
+		timestamp: slots.getTime() - globalOptions.get('clientDriftSeconds'),
 		asset: {
 			dapp: {
 				category: options.category,
@@ -875,7 +892,7 @@ function createInnerTransaction(options, secret) {
 	var keys = crypto.getKeys(secret)
 	var trs = {
 		fee: options.fee,
-		timestamp: slots.getTime() - constants.clientDriftSeconds,
+		timestamp: slots.getTime() - globalOptions.get('clientDriftSeconds'),
 		senderPublicKey: keys.publicKey,
 		type: options.type,
 		args: options.args
@@ -890,10 +907,11 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../constants.js":7,"../time/slots.js":9,"./crypto.js":10,"buffer":22,"bytebuffer":23}],12:[function(require,module,exports){
-var crypto = require("./crypto.js"),
-    constants = require("../constants.js"),
-    slots = require("../time/slots.js");
+},{"../constants.js":7,"../options.js":8,"../time/slots.js":10,"./crypto.js":11,"buffer":23,"bytebuffer":24}],13:[function(require,module,exports){
+var crypto = require("./crypto.js")
+var constants = require("../constants.js")
+var slots = require("../time/slots.js")
+var options = require('../options')
 
 function createDelegate(username, secret, secondSecret) {
 	var keys = crypto.getKeys(secret);
@@ -904,7 +922,7 @@ function createDelegate(username, secret, secondSecret) {
 		fee: constants.fees.delegate,
 		recipientId: null,
 		senderPublicKey: keys.publicKey,
-		timestamp: slots.getTime() - constants.clientDriftSeconds,
+		timestamp: slots.getTime() - options.get('clientDriftSeconds'),
 		asset: {
 			delegate: {
 				username: username,
@@ -928,10 +946,11 @@ module.exports = {
 	createDelegate : createDelegate
 }
 
-},{"../constants.js":7,"../time/slots.js":9,"./crypto.js":10}],13:[function(require,module,exports){
-var crypto = require("./crypto.js"),
-    constants = require("../constants.js"),
-    slots = require("../time/slots.js");
+},{"../constants.js":7,"../options":8,"../time/slots.js":10,"./crypto.js":11}],14:[function(require,module,exports){
+var crypto = require("./crypto.js")
+var constants = require("../constants.js")
+var slots = require("../time/slots.js")
+var options = require('../options')
 
 function newSignature(secondSecret) {
 	var keys = crypto.getKeys(secondSecret);
@@ -953,7 +972,7 @@ function createSignature(secret, secondSecret) {
 		fee: constants.fees.secondsignature,
 		recipientId: null,
 		senderPublicKey: keys.publicKey,
-		timestamp: slots.getTime() - constants.clientDriftSeconds,
+		timestamp: slots.getTime() - options.get('clientDriftSeconds'),
 		asset: {
 			signature: signature
 		}
@@ -969,11 +988,12 @@ module.exports = {
 	createSignature: createSignature
 }
 
-},{"../constants.js":7,"../time/slots.js":9,"./crypto.js":10}],14:[function(require,module,exports){
+},{"../constants.js":7,"../options":8,"../time/slots.js":10,"./crypto.js":11}],15:[function(require,module,exports){
 var ByteBuffer = require('bytebuffer')
 var crypto = require("./crypto.js")
 var constants = require("../constants.js")
 var slots = require("../time/slots.js")
+var options = require('../options')
 
 function createStorage(content, secret, secondSecret) {
 	var keys = crypto.getKeys(secret)
@@ -994,7 +1014,7 @@ function createStorage(content, secret, secondSecret) {
 		fee: fee,
 		recipientId: null,
 		senderPublicKey: keys.publicKey,
-		timestamp: slots.getTime() - constants.clientDriftSeconds,
+		timestamp: slots.getTime() - options.get('clientDriftSeconds'),
 		asset: {
 			storage: {
 				content: content
@@ -1018,10 +1038,11 @@ module.exports = {
 	createStorage : createStorage
 }
 
-},{"../constants.js":7,"../time/slots.js":9,"./crypto.js":10,"bytebuffer":23}],15:[function(require,module,exports){
-var crypto = require("./crypto.js"),
-    constants = require("../constants.js"),
-    slots = require("../time/slots.js");
+},{"../constants.js":7,"../options":8,"../time/slots.js":10,"./crypto.js":11,"bytebuffer":24}],16:[function(require,module,exports){
+var crypto = require("./crypto.js")
+var constants = require("../constants.js")
+var slots = require("../time/slots.js")
+var options = require('../options')
 
 function calculateFee(amount) {
     var min = constants.fees.send;
@@ -1036,7 +1057,7 @@ function createTransaction(recipientId, amount, message, secret, secondSecret) {
 		fee: constants.fees.send,
 		recipientId: recipientId,
 		message: message,
-		timestamp: slots.getTime() - constants.clientDriftSeconds,
+		timestamp: slots.getTime() - options.get('clientDriftSeconds'),
 		asset: {}
 	};
 
@@ -1061,7 +1082,7 @@ function createLock(height, secret, secondSecret) {
 		fee: 10000000,
 		recipientId: null,
 		args: [ String(height) ],
-		timestamp: slots.getTime() - constants.clientDriftSeconds,
+		timestamp: slots.getTime() - options.get('clientDriftSeconds'),
 		asset: {}
 	};
 
@@ -1084,10 +1105,11 @@ module.exports = {
 	calculateFee: calculateFee,
 	createLock: createLock
 }
-},{"../constants.js":7,"../time/slots.js":9,"./crypto.js":10}],16:[function(require,module,exports){
-var crypto = require("./crypto.js"),
-	constants = require("../constants.js"),
-	slots = require("../time/slots.js");
+},{"../constants.js":7,"../options":8,"../time/slots.js":10,"./crypto.js":11}],17:[function(require,module,exports){
+var crypto = require("./crypto.js")
+var constants = require("../constants.js")
+var slots = require("../time/slots.js")
+var options = require('../options')
 
 function createInTransfer(dappId, currency, amount, secret, secondSecret) {
 	var keys = crypto.getKeys(secret);
@@ -1098,7 +1120,7 @@ function createInTransfer(dappId, currency, amount, secret, secondSecret) {
 		fee: constants.fees.send,
 		recipientId: null,
 		senderPublicKey: keys.publicKey,
-		timestamp: slots.getTime() - constants.clientDriftSeconds,
+		timestamp: slots.getTime() - options.get('clientDriftSeconds'),
 		asset: {
 			inTransfer: {
 				dappId: dappId,
@@ -1133,7 +1155,7 @@ function createOutTransfer(recipientId, dappId, transactionId, currency, amount,
 		fee: constants.fees.send,
 		recipientId: recipientId,
 		senderPublicKey: keys.publicKey,
-		timestamp: slots.getTime() - constants.clientDriftSeconds,
+		timestamp: slots.getTime() - options.get('clientDriftSeconds'),
 		asset: {
 			outTransfer: {
 				dappId: dappId,
@@ -1167,14 +1189,15 @@ module.exports = {
 	createOutTransfer: createOutTransfer,
 	signOutTransfer: signOutTransfer
 }
-},{"../constants.js":7,"../time/slots.js":9,"./crypto.js":10}],17:[function(require,module,exports){
+},{"../constants.js":7,"../options":8,"../time/slots.js":10,"./crypto.js":11}],18:[function(require,module,exports){
 var ByteBuffer = require('bytebuffer')
 var crypto = require("./crypto.js")
 var constants = require("../constants.js")
 var slots = require("../time/slots.js")
+var options = require('../options')
 
 function getClientFixedTime() {
-  return slots.getTime() - constants.clientDriftSeconds
+  return slots.getTime() - options.get('clientDriftSeconds')
 }
 
 function createTransaction(asset, fee, type, recipientId, message, secret, secondSecret) {
@@ -1282,10 +1305,11 @@ module.exports = {
   },
 }
 
-},{"../constants.js":7,"../time/slots.js":9,"./crypto.js":10,"bytebuffer":23}],18:[function(require,module,exports){
-var crypto = require("./crypto.js"),
-    constants = require("../constants.js"),
-    slots = require("../time/slots.js");
+},{"../constants.js":7,"../options":8,"../time/slots.js":10,"./crypto.js":11,"bytebuffer":24}],19:[function(require,module,exports){
+var crypto = require("./crypto.js")
+var constants = require("../constants.js")
+var slots = require("../time/slots.js")
+var options = require('../options')
 
 function createVote(keyList, secret, secondSecret) {
 	var keys = crypto.getKeys(secret);
@@ -1296,7 +1320,7 @@ function createVote(keyList, secret, secondSecret) {
 		fee: constants.fees.vote,
 		recipientId: null,
 		senderPublicKey: keys.publicKey,
-		timestamp: slots.getTime() - constants.clientDriftSeconds,
+		timestamp: slots.getTime() - options.get('clientDriftSeconds'),
 		asset: {
 			vote: {
 				votes: keyList
@@ -1320,7 +1344,7 @@ module.exports = {
 	createVote: createVote
 }
 
-},{"../constants.js":7,"../time/slots.js":9,"./crypto.js":10}],19:[function(require,module,exports){
+},{"../constants.js":7,"../options":8,"../time/slots.js":10,"./crypto.js":11}],20:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -1436,9 +1460,9 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],20:[function(require,module,exports){
-
 },{}],21:[function(require,module,exports){
+
+},{}],22:[function(require,module,exports){
 (function (Buffer){
 /* bignumber.js v1.3.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
@@ -3556,7 +3580,7 @@ P['valueOf'] = function () {
 module.exports = BigNumber;
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":22}],22:[function(require,module,exports){
+},{"buffer":23}],23:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -5349,7 +5373,7 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":19,"ieee754":28,"isarray":31}],23:[function(require,module,exports){
+},{"base64-js":20,"ieee754":29,"isarray":32}],24:[function(require,module,exports){
 /*
  Copyright 2013-2014 Daniel Wirtz <dcode@dcode.io>
 
@@ -9097,7 +9121,7 @@ function isnan (val) {
     return ByteBuffer;
 });
 
-},{"long":32}],24:[function(require,module,exports){
+},{"long":33}],25:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -9208,7 +9232,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":30}],25:[function(require,module,exports){
+},{"../../is-buffer/index.js":31}],26:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -9512,7 +9536,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 (function (root, factory) {
     // Hack to make all exports of this module sha256 function object properties.
     var exports = {};
@@ -9885,7 +9909,7 @@ function pbkdf2(password, salt, iterations, dkLen) {
 exports.pbkdf2 = pbkdf2;
 });
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var Transform = require('stream').Transform
@@ -9972,7 +9996,7 @@ HashBase.prototype._digest = function () {
 module.exports = HashBase
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":22,"inherits":29,"stream":50}],28:[function(require,module,exports){
+},{"buffer":23,"inherits":30,"stream":51}],29:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -10058,7 +10082,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -10083,7 +10107,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -10106,14 +10130,14 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /*
  Copyright 2013 Daniel Wirtz <dcode@dcode.io>
  Copyright 2009 The Closure Library Authors. All Rights Reserved.
@@ -11324,7 +11348,7 @@ module.exports = Array.isArray || function (arr) {
     return Long;
 });
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -11371,7 +11395,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":34}],34:[function(require,module,exports){
+},{"_process":35}],35:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -11557,10 +11581,10 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":36}],36:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":37}],37:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -11685,7 +11709,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":38,"./_stream_writable":40,"core-util-is":24,"inherits":29,"process-nextick-args":33}],37:[function(require,module,exports){
+},{"./_stream_readable":39,"./_stream_writable":41,"core-util-is":25,"inherits":30,"process-nextick-args":34}],38:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -11733,7 +11757,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":39,"core-util-is":24,"inherits":29}],38:[function(require,module,exports){
+},{"./_stream_transform":40,"core-util-is":25,"inherits":30}],39:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -12743,7 +12767,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":36,"./internal/streams/BufferList":41,"./internal/streams/destroy":42,"./internal/streams/stream":43,"_process":34,"core-util-is":24,"events":25,"inherits":29,"isarray":31,"process-nextick-args":33,"safe-buffer":49,"string_decoder/":51,"util":20}],39:[function(require,module,exports){
+},{"./_stream_duplex":37,"./internal/streams/BufferList":42,"./internal/streams/destroy":43,"./internal/streams/stream":44,"_process":35,"core-util-is":25,"events":26,"inherits":30,"isarray":32,"process-nextick-args":34,"safe-buffer":50,"string_decoder/":52,"util":21}],40:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -12958,7 +12982,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":36,"core-util-is":24,"inherits":29}],40:[function(require,module,exports){
+},{"./_stream_duplex":37,"core-util-is":25,"inherits":30}],41:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -13625,7 +13649,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":36,"./internal/streams/destroy":42,"./internal/streams/stream":43,"_process":34,"core-util-is":24,"inherits":29,"process-nextick-args":33,"safe-buffer":49,"util-deprecate":53}],41:[function(require,module,exports){
+},{"./_stream_duplex":37,"./internal/streams/destroy":43,"./internal/streams/stream":44,"_process":35,"core-util-is":25,"inherits":30,"process-nextick-args":34,"safe-buffer":50,"util-deprecate":54}],42:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -13700,7 +13724,7 @@ module.exports = function () {
 
   return BufferList;
 }();
-},{"safe-buffer":49}],42:[function(require,module,exports){
+},{"safe-buffer":50}],43:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -13773,13 +13797,13 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":33}],43:[function(require,module,exports){
+},{"process-nextick-args":34}],44:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":25}],44:[function(require,module,exports){
+},{"events":26}],45:[function(require,module,exports){
 module.exports = require('./readable').PassThrough
 
-},{"./readable":45}],45:[function(require,module,exports){
+},{"./readable":46}],46:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -13788,13 +13812,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":36,"./lib/_stream_passthrough.js":37,"./lib/_stream_readable.js":38,"./lib/_stream_transform.js":39,"./lib/_stream_writable.js":40}],46:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":37,"./lib/_stream_passthrough.js":38,"./lib/_stream_readable.js":39,"./lib/_stream_transform.js":40,"./lib/_stream_writable.js":41}],47:[function(require,module,exports){
 module.exports = require('./readable').Transform
 
-},{"./readable":45}],47:[function(require,module,exports){
+},{"./readable":46}],48:[function(require,module,exports){
 module.exports = require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":40}],48:[function(require,module,exports){
+},{"./lib/_stream_writable.js":41}],49:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var inherits = require('inherits')
@@ -14089,7 +14113,7 @@ function fn5 (a, b, c, d, e, m, k, s) {
 module.exports = RIPEMD160
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":22,"hash-base":27,"inherits":29}],49:[function(require,module,exports){
+},{"buffer":23,"hash-base":28,"inherits":30}],50:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -14153,7 +14177,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":22}],50:[function(require,module,exports){
+},{"buffer":23}],51:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14282,7 +14306,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":25,"inherits":29,"readable-stream/duplex.js":35,"readable-stream/passthrough.js":44,"readable-stream/readable.js":45,"readable-stream/transform.js":46,"readable-stream/writable.js":47}],51:[function(require,module,exports){
+},{"events":26,"inherits":30,"readable-stream/duplex.js":36,"readable-stream/passthrough.js":45,"readable-stream/readable.js":46,"readable-stream/transform.js":47,"readable-stream/writable.js":48}],52:[function(require,module,exports){
 'use strict';
 
 var Buffer = require('safe-buffer').Buffer;
@@ -14555,7 +14579,7 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":49}],52:[function(require,module,exports){
+},{"safe-buffer":50}],53:[function(require,module,exports){
 (function(nacl) {
 'use strict';
 
@@ -16934,7 +16958,7 @@ nacl.setPRNG = function(fn) {
 
 })(typeof module !== 'undefined' && module.exports ? module.exports : (self.nacl = self.nacl || {}));
 
-},{"crypto":20}],53:[function(require,module,exports){
+},{"crypto":21}],54:[function(require,module,exports){
 (function (global){
 
 /**
