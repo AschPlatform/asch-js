@@ -41,6 +41,19 @@ module.exports = {
     return true
   },
 
+  isBase58CheckAddress: function (address) {
+    if (typeof address !== 'string') {
+      return false
+    }
+    if (!base58check.decodeUnsafe(address.slice(1))) {
+      return false
+    }
+    if (['A'].indexOf(address[0]) == -1) {
+      return false
+    }
+    return true
+  },
+
   generateBase58CheckAddress: function (publicKey) {
     if (typeof publicKey === 'string') {
       publicKey = Buffer.from(publicKey, 'hex')
@@ -816,7 +829,9 @@ module.exports = {
 	fixedPoint: fixedPoint,
 	signBytes: signBytes,
 	toLocalBuffer: toLocalBuffer,
-	verifyBytes: verifyBytes
+	verifyBytes: verifyBytes,
+	isAddress: addressHelper.isAddress,
+	isBase58CheckAddress: addressHelper.isBase58CheckAddress
 }
 
 }).call(this,require("buffer").Buffer)
@@ -890,12 +905,14 @@ function getDAppTransactionBytes(trs, skipSignature) {
 
 function createInnerTransaction(options, secret) {
 	var keys = crypto.getKeys(secret)
+	var args = options.args
+	if (args instanceof Array) args = JSON.stringify(args)
 	var trs = {
 		fee: options.fee,
 		timestamp: slots.getTime() - globalOptions.get('clientDriftSeconds'),
 		senderPublicKey: keys.publicKey,
 		type: options.type,
-		args: options.args
+		args: args
 	}
 	trs.signature = crypto.signBytes(getDAppTransactionBytes(trs), keys)
 	return trs
