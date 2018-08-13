@@ -14,7 +14,7 @@ describe("Asch JS", function () {
 	});
 
 	it("should have properties", function () {
-		var properties = ["transaction", "signature", "vote", "delegate", "dapp", "crypto"];
+		var properties = ["transaction", "signature", "vote", "delegate", "chain", "crypto"];
 
 		properties.forEach(function (property) {
 			(asch).should.have.property(property);
@@ -309,19 +309,19 @@ describe("Asch JS", function () {
 		});
 	});
 
-	describe("dapp.js", function () {
-		var dapp = asch.dapp;
+	describe("chain.js", function () {
+		var chain = asch.chain;
 
 		it("should be object", function () {
-			(dapp).should.be.type("object");
+			(chain).should.be.type("object");
 		});
 
 		it("should have properties", function () {
-			(dapp).should.have.property("createDApp");
+			(chain).should.have.property("createChain");
 		})
 
-		describe("#createDApp", function () {
-			var createDApp = dapp.createDApp;
+		describe("#createChain", function () {
+			var createChain = chain.createChain;
 			var trs = null;
 
 			var options = {
@@ -343,20 +343,20 @@ describe("Asch JS", function () {
 			}
 
 			it("should be a function", function () {
-				(createDApp).should.be.type("function");
+				(createChain).should.be.type("function");
 			});
 
-			it("should create dapp without second signature", function () {
-				trs = createDApp(options, "secret", null);
+			it("should create chain without second signature", function () {
+				trs = createChain(options, "secret", null);
 				(trs).should.be.ok;
 			});
 
 			it("should create delegate with second signature", function () {
-				trs = createDApp(options, "secret", "secret 2");
+				trs = createChain(options, "secret", "secret 2");
 				(trs).should.be.ok;
 			});
 
-			describe("returned dapp", function () {
+			describe("returned chain", function () {
 				var keys = asch.crypto.getKeys("secret");
 				var secondKeys = asch.crypto.getKeys("secret 2");
 
@@ -400,41 +400,41 @@ describe("Asch JS", function () {
 					(trs.timestamp).should.be.type("number").and.not.NaN;
 				});
 
-				it("should have dapp inside asset", function () {
-					(trs.asset).should.have.property("dapp");
+				it("should have chain inside asset", function () {
+					(trs.asset).should.have.property("chain");
 				});
 
-				describe("dapp asset", function () {
+				describe("chain asset", function () {
 					it("should be ok", function () {
-						(trs.asset.dapp).should.be.ok;
+						(trs.asset.chain).should.be.ok;
 					})
 
 					it("should be object", function () {
-						(trs.asset.dapp).should.be.type("object");
+						(trs.asset.chain).should.be.type("object");
 					});
 
 					it("should have category property", function () {
-						(trs.asset.dapp).should.have.property("category").and.equal(options.category);
+						(trs.asset.chain).should.have.property("category").and.equal(options.category);
 					});
 
 					it("should have name property", function () {
-						(trs.asset.dapp).should.have.property("name").and.equal(options.name);
+						(trs.asset.chain).should.have.property("name").and.equal(options.name);
 					});
 
 					it("should have tags property", function () {
-						(trs.asset.dapp).should.have.property("tags").and.equal(options.tags);
+						(trs.asset.chain).should.have.property("tags").and.equal(options.tags);
 					});
 
 					it("should have type property", function () {
-						(trs.asset.dapp).should.have.property("type").and.equal(options.type);
+						(trs.asset.chain).should.have.property("type").and.equal(options.type);
 					});
 
 					it("should have link property", function () {
-						(trs.asset.dapp).should.have.property("link").and.equal(options.link);
+						(trs.asset.chain).should.have.property("link").and.equal(options.link);
 					});
 
 					it("should have icon property", function () {
-						(trs.asset.dapp).should.have.property("icon").and.equal(options.icon);
+						(trs.asset.chain).should.have.property("icon").and.equal(options.icon);
 					});
 				});
 

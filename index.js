@@ -1,6 +1,6 @@
 module.exports = {
 	crypto : require("./lib/transactions/crypto.js"),
-	dapp: require("./lib/transactions/dapp.js"),
+	chain: require("./lib/transactions/chain.js"),
 	transfer: require("./lib/transactions/transfer.js"),
 	delegate : require("./lib/transactions/delegate.js"),
 	signature : require("./lib/transactions/signature.js"),
