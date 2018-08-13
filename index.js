@@ -7,7 +7,6 @@ module.exports = {
 	transaction : require("./lib/transactions/transaction.js"),
 	vote : require("./lib/transactions/vote.js"),
 	uia: require("./lib/transactions/uia.js"),
-	storage: require("./lib/transactions/storage.js"),
 	options: require("./lib/options.js"),
 	utils: {
 		slots: require("./lib/time/slots.js"),
