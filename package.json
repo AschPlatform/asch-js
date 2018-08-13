@@ -31,6 +31,6 @@
     "browserify": "^13.1.0",
     "mocha": "^3.4.2",
     "should": "^9.0.2",
-    "uglify-js": "^2.7.3"
+    "uglify-es": "github:mishoo/UglifyJS2#harmony"
   }
 }
