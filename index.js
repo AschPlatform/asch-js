@@ -1,4 +1,5 @@
 module.exports = {
+	basic: require("./lib/transactions/basic.js"),
 	crypto : require("./lib/transactions/crypto.js"),
 	dapp: require("./lib/transactions/dapp.js"),
 	transfer: require("./lib/transactions/transfer.js"),
