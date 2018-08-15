@@ -1,4 +1,5 @@
 module.exports = {
+	basic: require("./lib/transactions/basic.js"),
 	crypto : require("./lib/transactions/crypto.js"),
 	dapp: require("./lib/transactions/dapp.js"),
 	transfer: require("./lib/transactions/transfer.js"),
@@ -7,7 +8,6 @@ module.exports = {
 	transaction : require("./lib/transactions/transaction.js"),
 	vote : require("./lib/transactions/vote.js"),
 	uia: require("./lib/transactions/uia.js"),
-	storage: require("./lib/transactions/storage.js"),
 	options: require("./lib/options.js"),
 	utils: {
 		slots: require("./lib/time/slots.js"),
