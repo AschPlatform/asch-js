@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test",
+    "test": "LOG_LEVEL=error jest",
     "build": "browserify build.js -o browserify-asch.js && uglifyjs browserify-asch.js > browserify-asch-min.js"
   },
   "keywords": [
@@ -29,8 +29,8 @@
   },
   "devDependencies": {
     "browserify": "^13.1.0",
-    "mocha": "^3.4.2",
-    "should": "^9.0.2",
+    "jest": "=23.4.1",
+    "should": "=13.2.3",
     "uglify-es": "github:mishoo/UglifyJS2#harmony"
   }
 }
