@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "LOG_LEVEL=error jest",
-    "build": "browserify build.js -o browserify-asch.js && uglifyjs browserify-asch.js > browserify-asch-min.js"
+    "build": "browserify build.js -o browserify-asch.js && uglifyjs browserify-asch.js > browserify-asch-min.js",
+    "test:typings": "./node_modules/.bin/tsc ./types/index.d.ts"
   },
   "keywords": [
     "asch",
@@ -17,7 +18,9 @@
   ],
   "author": "sqf1225@foxmail.com",
   "license": "ISC",
+  "types": "./types/index.d.ts",
   "dependencies": {
+    "@types/node": "^10.9.4",
     "JSONStream": "=1.3.1",
     "browserify-bignum": "=1.3.0-2",
     "buffer": "=4.7.0",
