@@ -159,19 +159,19 @@ describe("dapp.js", () => {
         });
       });
 
-      it.skip("should be signed correctly", () => {
+      it("should be signed correctly", () => {
         var result = asch.crypto.verify(trs);
         
         (result).should.be.ok;
       });
 
-      it.skip("should not be signed correctly now", () => {
+      it("should not be signed correctly now", () => {
         trs.amount = 10000;
         var result = asch.crypto.verify(trs);
         (result).should.be.not.ok;
       });
 
-      it.skip("should be second signed correctly", () => {
+      it("should be second signed correctly", () => {
         trs = createDApp(options, "secret", "secret 2");
 
         trs.amount = 0;
@@ -179,7 +179,7 @@ describe("dapp.js", () => {
         (result).should.be.ok;
       });
 
-      it.skip("should not be second signed correctly now", () => {
+      it("should not be second signed correctly now", () => {
         trs = createDApp(options, "secret", "secret 2");
 
         trs.amount = 10000;

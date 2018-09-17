@@ -94,23 +94,23 @@ describe("vote.js", () => {
         });
       });
 
-      it.skip("should be signed correctly", () => {
+      it("should be signed correctly", () => {
         var result = asch.crypto.verify(vt);
         (result).should.be.ok;
       });
 
-      it.skip("should be second signed correctly", () => {
+      it("should be second signed correctly", () => {
         var result = asch.crypto.verifySecondSignature(vt, asch.crypto.getKeys("second secret").publicKey);
         (result).should.be.ok;
       });
 
-      it.skip("should not be signed correctly now", () => {
+      it("should not be signed correctly now", () => {
         vt.amount = 100;
         var result = asch.crypto.verify(vt);
         (result).should.be.not.ok;
       });
 
-      it.skip("should not be second signed correctly now", () => {
+      it("should not be second signed correctly now", () => {
         vt.amount = 100;
         var result = asch.crypto.verifySecondSignature(vt, asch.crypto.getKeys("second secret").publicKey);
         (result).should.be.not.ok;

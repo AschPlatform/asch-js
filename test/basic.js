@@ -5,17 +5,6 @@ var asch = require("../index.js");
 
 describe("basic.js", () => {
   var basic = asch.basic;
-  var setName;
-  var trs;
-
-  beforeEach(() => {
-    setName = asch.basic.setName;
-    trs = basic.setName("sqfasd", "secret", null)
-  });
-
-  afterEach(() => {
-    trs = null;
-  });
 
   it("should be ok", () => {
     (basic).should.be.ok;
@@ -25,11 +14,23 @@ describe("basic.js", () => {
     (basic).should.be.type("object");
   });
 
-  it("should have property setName", () => {
-    (basic).should.have.property("setName");
-  });
-
   describe("#setName", () => {
+    var setName;
+    var trs;
+
+    beforeEach(() => {
+      setName = asch.basic.setName;
+      trs = basic.setName("sqfasd", "secret", null)
+    });
+  
+    afterEach(() => {
+      trs = null;
+    });
+
+    it("should have property setName", () => {
+      (basic).should.have.property("setName");
+    });
+
     it("should be function", () => {
       (setName).should.be.type("function");
     });
@@ -84,6 +85,74 @@ describe("basic.js", () => {
           trs = setName(nickname, "secret", "second secret");
           (trs.fee).should.be.type("number").and.equal(1 * 1e8);
         });
+      });
+    });
+  });
+
+  describe('#setSecondSecret', () => {
+    var trs;
+    var setSecondSecret = basic.setSecondSecret;
+
+    beforeEach(() => {
+      trs = setSecondSecret('secret', 'second password')
+    });
+
+    afterEach(() => {
+      trs = null;
+    });
+
+    it('should have property setSecondSecret', () => {
+      (basic).should.have.property('setSecondSecret');
+    });
+
+    it('setSecondSecret should create transaction', () => {
+      trs = setSecondSecret('secret', 'second secret');
+      (trs).should.be.ok;
+      (trs).should.be.type('object');
+    });
+
+    describe('returned setSecondSecret transaction', () => {
+      it('should have id as string', () => {
+        (trs.id).should.be.type('string');
+      });
+
+      it('should have type as number and equal 3', () => {
+        (trs.type).should.be.type('number').and.equal(3);
+      });
+
+      it('should have property fee and equals 5 XAS', function () {
+        (trs.fee).should.be.type('number').and.equal(5 * 1e8);
+      });
+
+      it('should have senderPublicKey property', () => {
+        (trs).should.have.property('senderPublicKey').and.be.type('string');
+      });
+
+      it('should have timestamp property', () => {
+        (trs).should.have.property('timestamp').and.be.type('number');
+      });
+
+      it('should have senderId property', () => {
+        (trs).should.have.property('senderId').and.be.type('string');
+      });
+
+      it('should have publicKey of secondSecret in args array', () => {
+        let secondSecret = "secret2";
+        let trs = setSecondSecret("secret", secondSecret);
+
+        (trs.args[0]).should.equal('eda5a45e16f43d08ebb51d3c3046c3744cb552be5a4e1fc9c1894d76df7b8536');
+      });
+
+      it('should publicKey of secondSecret be in hex array', () => {
+        should(trs.args[0]).be.type("string").and.match(() => {
+            try {
+              new Buffer(trs.args[0]);
+            } catch (e) {
+              return false;
+            }
+
+            return true;
+          });
       });
     });
   });
