@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "lib": ["es6"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "typeRoots": [ "../node_modules/@types" ],
+    "noImplicitAny": true,
+    "noImplicitThis": false,
+    "strictNullChecks": true,
+    "strictFunctionTypes": false
+  },
+  "include": [
+    "index.d.ts"
+  ],
+  "exclude": [
+    "../node_modules",
+    "../test",
+    "../lib"
+  ]
+}
