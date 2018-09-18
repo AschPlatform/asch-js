@@ -14,7 +14,7 @@ describe("Asch JS", () => {
 	});
 
 	it("should have properties", () => {
-		var properties = ["transaction", "basic", "vote", "delegate", "dapp", "crypto", "transfer", "uia", "options", "utils"];
+		var properties = ["transaction", "basic", "vote", "delegate", "chain", "crypto", "transfer", "uia", "options", "utils"];
 
 		properties.forEach(function (property) {
 			(asch).should.have.property(property);
