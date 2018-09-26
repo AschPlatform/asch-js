@@ -32,12 +32,12 @@ describe("group.js", () => {
     (group).should.have.property("registerGroup");
   });
 
-  it("should have voteGroup property", () => {
-    (group).should.have.property("voteGroup");
+  it("should have voteTransaction property", () => {
+    (group).should.have.property("voteTransaction");
   })
 
-  it("should have activateGroup property", () => {
-    (group).should.have.property("activateGroup");
+  it("should have activateTransaction property", () => {
+    (group).should.have.property("activateTransaction");
   })
 
   it("should have addMember property", () => {
