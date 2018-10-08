@@ -17,7 +17,7 @@
     "library"
   ],
   "author": "sqf1225@foxmail.com",
-  "license": "ISC",
+  "license": "MIT",
   "types": "./types/index.d.ts",
   "dependencies": {
     "@types/node": "^10.9.4",
