@@ -158,6 +158,62 @@ interface Uia {
 }
 
 /*
+  proposal.js
+*/
+interface RegisterGatwayOptions {
+  gatewayName: string;
+  gatewayDesc: string;
+  minmumMembers?: number;
+  updateInterval?: number;
+  currencySymbol: string;
+  currencyDesc: string;
+  currencyPrecision: number;
+  proposalTitle?: string;
+  proposalDesc?: string;
+  proposalEndHeight: number;
+}
+
+interface InitGatewayOptions {
+  gatewayName: string;
+  gatewayMembers: string[];
+  proposalTitle?: string;
+  proposalDesc?: string;
+  proposalEndHeight: number;
+}
+
+interface UpdateGatewayMemberOptions {
+  gatewayName: string;
+  fromAddress: string;
+  toAddress: string;
+  proposalTitle?: string;
+  proposalDesc?: string;
+  proposalEndHeight: number;
+}
+
+interface RevokeGatewayOptions {
+  gatewayName: string;
+  proposalTitle?: string;
+  proposalDesc?: string;
+  proposalEndHeight: number;
+}
+
+interface Proposal {
+	registerGateway: (options: RegisterGatwayOptions, secret: string, secondSecret?: string) => MainchainTransaction;
+	initGateway: (options: InitGatewayOptions, secret: string, secondSecret?: string) => MainchainTransaction;
+	updateGatewayMember: (options: UpdateGatewayMemberOptions, secret: string, secondSecret?: string) => MainchainTransaction;
+	revokeGateway: (options: RevokeGatewayOptions, secret: string, secondSecret?: string) => MainchainTransaction;
+	activateProposal: (tid: string, secret: string, secondSecret?: string) => MainchainTransaction;
+	upvoteProposal: (tid: string, secret: string, secondSecret?: string) => MainchainTransaction;
+}
+
+/*
+  gateway.js
+*/
+interface Gateway {
+  registerMember: (gateway: string, memberPublicKey: string, secret: string, secondSecret?: string) => MainchainTransaction;
+}
+
+/*
   options.js
 */
 interface Options {
@@ -203,6 +259,8 @@ declare const asch_js: {
   transaction: Transaction,
   vote: Vote,
   uia: Uia,
+  proposal: Proposal,
+  gateway: Gateway,
   options: Options,
   utils: {
     slots: Slots,
