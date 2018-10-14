@@ -109,6 +109,16 @@ interface Delegate {
 }
 
 /*
+  signature.js
+*/
+interface Signature {
+  /**
+   * @deprecated Use instead basic.setSecondSecret(secret, secondSecret)
+   */
+  createSignature: (secret: string, secondSecret: string) => MainchainTransaction;
+}
+
+/*
   vote.js
 */
 interface Vote {
@@ -256,6 +266,7 @@ declare const asch_js: {
   dapp: Dapp,
   transfer: Transfer,
   delegate: Delegate,
+  signature: Signature,
   transaction: Transaction,
   vote: Vote,
   uia: Uia,
