@@ -1,5 +1,7 @@
 import * as Buffer from "buffer";
 
+declare module "buffer";
+
 /*
   crypto.js
 */
@@ -158,6 +160,15 @@ interface Uia {
 }
 
 /*
+  agent.js
+*/
+interface Agent {
+  registerAsAgent: (secret: string, secondSecret?: string) => MainchainTransaction;
+  setAgent: (nickname: string, secret: string, secondSecret?: string) => MainchainTransaction;
+  cancelAgent: (secret: string, secondSecret?: string) => MainchainTransaction;
+}
+
+/*
   proposal.js
 */
 interface RegisterGatwayOptions {
@@ -259,6 +270,7 @@ declare const asch_js: {
   transaction: Transaction,
   vote: Vote,
   uia: Uia,
+  agent: Agent,
   proposal: Proposal,
   gateway: Gateway,
   options: Options,
