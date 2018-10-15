@@ -4,11 +4,13 @@ module.exports = {
 	chain: require("./lib/transactions/chain.js"),
 	transfer: require("./lib/transactions/transfer.js"),
 	delegate : require("./lib/transactions/delegate.js"),
+	signature: require('./lib/transactions/signature.js'),
 	transaction : require("./lib/transactions/transaction.js"),
 	vote : require("./lib/transactions/vote.js"),
 	uia: require("./lib/transactions/uia.js"),
 	proposal: require("./lib/transactions/proposal.js"),
 	gateway: require("./lib/transactions/gateway.js"),
+	agent: require('./lib/transactions/agent.js'),
 	options: require("./lib/options.js"),
 	utils: {
 		slots: require("./lib/time/slots.js"),
