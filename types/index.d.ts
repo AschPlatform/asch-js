@@ -1,5 +1,7 @@
 import * as Buffer from "buffer";
 
+declare module "buffer";
+
 /*
   crypto.js
 */
@@ -109,6 +111,16 @@ interface Delegate {
 }
 
 /*
+  signature.js
+*/
+interface Signature {
+  /**
+   * @deprecated Use instead basic.setSecondSecret(secret, secondSecret)
+   */
+  createSignature: (secret: string, secondSecret: string) => MainchainTransaction;
+}
+
+/*
   vote.js
 */
 interface Vote {
@@ -179,6 +191,71 @@ interface Group {
 }
 
 /*
+  agent.js
+*/
+interface Agent {
+  registerAsAgent: (secret: string, secondSecret?: string) => MainchainTransaction;
+  setAgent: (nickname: string, secret: string, secondSecret?: string) => MainchainTransaction;
+  cancelAgent: (secret: string, secondSecret?: string) => MainchainTransaction;
+}
+
+/*
+  proposal.js
+*/
+interface RegisterGatwayOptions {
+  gatewayName: string;
+  gatewayDesc: string;
+  minmumMembers?: number;
+  updateInterval?: number;
+  currencySymbol: string;
+  currencyDesc: string;
+  currencyPrecision: number;
+  proposalTitle?: string;
+  proposalDesc?: string;
+  proposalEndHeight: number;
+}
+
+interface InitGatewayOptions {
+  gatewayName: string;
+  gatewayMembers: string[];
+  proposalTitle?: string;
+  proposalDesc?: string;
+  proposalEndHeight: number;
+}
+
+interface UpdateGatewayMemberOptions {
+  gatewayName: string;
+  fromAddress: string;
+  toAddress: string;
+  proposalTitle?: string;
+  proposalDesc?: string;
+  proposalEndHeight: number;
+}
+
+interface RevokeGatewayOptions {
+  gatewayName: string;
+  proposalTitle?: string;
+  proposalDesc?: string;
+  proposalEndHeight: number;
+}
+
+interface Proposal {
+	registerGateway: (options: RegisterGatwayOptions, secret: string, secondSecret?: string) => MainchainTransaction;
+	initGateway: (options: InitGatewayOptions, secret: string, secondSecret?: string) => MainchainTransaction;
+	updateGatewayMember: (options: UpdateGatewayMemberOptions, secret: string, secondSecret?: string) => MainchainTransaction;
+	revokeGateway: (options: RevokeGatewayOptions, secret: string, secondSecret?: string) => MainchainTransaction;
+	activateProposal: (tid: string, secret: string, secondSecret?: string) => MainchainTransaction;
+	upvoteProposal: (tid: string, secret: string, secondSecret?: string) => MainchainTransaction;
+}
+
+/*
+  gateway.js
+*/
+interface Gateway {
+  registerMember: (gateway: string, memberPublicKey: string, secret: string, secondSecret?: string) => MainchainTransaction;
+}
+
+/*
   options.js
 */
 interface Options {
@@ -221,10 +298,14 @@ declare const asch_js: {
   dapp: Dapp,
   transfer: Transfer,
   delegate: Delegate,
+  signature: Signature,
   transaction: Transaction,
   vote: Vote,
   uia: Uia,
   group: Group,
+  agent: Agent,
+  proposal: Proposal,
+  gateway: Gateway,
   options: Options,
   utils: {
     slots: Slots,
