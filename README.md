@@ -35,4 +35,4 @@ console.log(window.AschJS)
 
 ## Usage
 
-Please reference the [asch http interface documents](https://github.com/AschPlatform/asch/blob/master/docs/asch_http_interface.md)
+Please reference the [asch-js documentation](https://github.com/AschPlatform/asch-docs/tree/master/js_api)
