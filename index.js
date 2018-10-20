@@ -11,6 +11,7 @@ module.exports = {
 	uia: require("./lib/transactions/uia.js"),
 	proposal: require("./lib/transactions/proposal.js"),
 	gateway: require("./lib/transactions/gateway.js"),
+	group: require("./lib/transactions/group.js"),
 	agent: require('./lib/transactions/agent.js'),
 	options: require("./lib/options.js"),
 	utils: {

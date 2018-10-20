@@ -170,6 +170,27 @@ interface Uia {
 }
 
 /*
+  group.js
+*/
+interface RegisterGroupParams {
+  groupName: string;
+  members: string[];
+  min: number;
+  max: number;
+  m: number;
+  updateInterval: number;
+}
+
+interface Group {
+  registerGroup: (options: RegisterGroupParams, secret: string, secondSecret?: string) => MainchainTransaction;
+  voteTransaction: (targetId: string, secret: string, secondSecret?: string) => MainchainTransaction;
+  activateTransaction: (targetId: string, secret: string, secondSecret?: string) => MainchainTransaction;
+  addMember: (address: string, weight: number, m: number, secret: string, secondSecret?: string) => MainchainTransaction;
+  removeMember: (address: string, m: number, secret: string, secondSecret?: string) => MainchainTransaction;
+  transformIntoGroupTransaction: (normalTransaction: MainchainTransaction, groupName: string, secret: string, secondSecret?: string) => MainchainTransaction;
+}
+
+/*
   agent.js
 */
 interface Agent {
@@ -281,6 +302,7 @@ declare const asch_js: {
   transaction: Transaction,
   vote: Vote,
   uia: Uia,
+  group: Group,
   agent: Agent,
   proposal: Proposal,
   gateway: Gateway,
