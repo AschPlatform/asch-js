@@ -4,13 +4,10 @@ var should = require("should");
 var asch = require("../index.js");
 
 var options = {
-  "name": "asch-dapp-cctime",
-  "link": "https://github.com/AschPlatform/asch-dapp-cctime/archive/master.zip",
-  "category": 1,
+  "name": "asch-chain-cctime",
+  "link": "https://github.com/AschPlatform/asch-chain-cctime/archive/master.zip",
   "desc": "Decentralized news channel",
-  "tags": "asch,dapp,demo,cctime",
   "icon": "http://o7dyh3w0x.bkt.clouddn.com/hello.png",
-  "type": 0,
   "delegates": [
     "8b1c24a0b9ba9b9ccf5e35d0c848d582a2a22cca54d42de8ac7b2412e7dc63d4",
     "aa7dcc3afd151a549e826753b0547c90e61b022adb26938177904a73fc4fee36",
@@ -23,17 +20,17 @@ var options = {
 
 
 
-describe("dapp.js", () => {
-  var dapp = asch.dapp;
+describe("chain.js", () => {
+  var chain = asch.chain;
 
-  var createDApp = dapp.createDApp;
+  var createChain = chain.createChain;
   var trs;
   var keys;
   var secondKeys;
 
 
   beforeEach(() => {
-    trs = createDApp(options, "secret", null);
+    trs = createChain(options, "secret", null);
     keys = asch.crypto.getKeys("secret");
     secondKeys = asch.crypto.getKeys("secret 2");
   })
@@ -43,29 +40,29 @@ describe("dapp.js", () => {
   })
 
   it("should be object", () => {
-    (dapp).should.be.type("object");
+    (chain).should.be.type("object");
   });
 
   it("should have properties", () => {
-    (dapp).should.have.property("createDApp");
+    (chain).should.have.property("createChain");
   })
 
-  describe("#createDApp", () => {
+  describe("#createChain", () => {
     it("should be a function", () => {
-      (createDApp).should.be.type("function");
+      (createChain).should.be.type("function");
     });
 
-    it("should create dapp without second signature", () => {
-      trs = createDApp(options, "secret", null);
+    it("should create chain without second signature", () => {
+      trs = createChain(options, "secret", null);
       (trs).should.be.ok;
     });
 
-    it("should create dapp with second signature", () => {
-      trs = createDApp(options, "secret", "secret 2");
+    it("should create chain with second signature", () => {
+      trs = createChain(options, "secret", "secret 2");
       (trs).should.be.ok;
     });
 
-    describe("returned dapp", () => {
+    describe("returned chain", () => {
       it("should be object", () => {
         (trs).should.be.type("object");
       });
@@ -102,7 +99,7 @@ describe("dapp.js", () => {
         (trs.args).should.be.an.Array();
       });
 
-      describe("dapp args", () => {
+      describe("chain args", () => {
         it("should be ok", () => {
           (trs.args).should.be.ok;
         })
@@ -148,7 +145,7 @@ describe("dapp.js", () => {
       });
 
       it("should have second signature in hex", () => {
-        trs = createDApp(options, "secret", "secret 2");
+        trs = createChain(options, "secret", "secret 2");
         (trs).should.have.property("secondSignature").and.type("string").and.match(() => {
           try {
             new Buffer(trs.secondSignature, "hex");
@@ -172,7 +169,7 @@ describe("dapp.js", () => {
       });
 
       it("should be second signed correctly", () => {
-        trs = createDApp(options, "secret", "secret 2");
+        trs = createChain(options, "secret", "secret 2");
 
         trs.amount = 0;
         var result = asch.crypto.verifySecondSignature(trs, secondKeys.publicKey);
@@ -180,7 +177,7 @@ describe("dapp.js", () => {
       });
 
       it("should not be second signed correctly now", () => {
-        trs = createDApp(options, "secret", "secret 2");
+        trs = createChain(options, "secret", "secret 2");
 
         trs.amount = 10000;
         var result = asch.crypto.verifySecondSignature(trs, secondKeys.publicKey);

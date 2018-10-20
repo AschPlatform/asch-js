@@ -55,9 +55,9 @@ interface Crypto {
 }
 
 /*
-  dapp.js
+  chain.js
 */
-interface DappOptions {
+interface ChainOptions {
   name: string;
   desc: string;
   link: string;
@@ -81,8 +81,8 @@ interface SidechainTransaction {
   signature: string;
 }
 
-interface Dapp {
-  createDApp: (options: DappOptions, secret: string, secondSecret?: string) => MainchainTransaction;
+interface Chain {
+  createChain: (options: ChainOptions, secret: string, secondSecret?: string) => MainchainTransaction;
   createInnerTransaction: (options: InnerTransactionOptions, secret: string) => SidechainTransaction;
 }
 
@@ -274,7 +274,7 @@ export = asch_js;
 declare const asch_js: {
   basic: Basic,
   crypto: Crypto,
-  dapp: Dapp,
+  chain: Chain,
   transfer: Transfer,
   delegate: Delegate,
   signature: Signature,
